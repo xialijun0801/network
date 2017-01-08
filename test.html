@@ -4,6 +4,31 @@
 <h2>Hello Chris</h2>
 <img src="hehua.jpg" alt="water lotus" style="width:604px;height:448px;"/>
 
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
+
+<!script src="node_modules/angular/angular.js"><!/script>
+
+<body>
+
+<p>Register</p>
+<div ng-app="myApp" ng-controller="myCtrl">
+
+First Name: <input type="text" ng-model="firstName"><br>
+Last Name: <input type="text" ng-model="lastName"><br>
+<br>
+Full Name: {{firstName + " " + lastName}}
+
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope) {
+    $scope.firstName= "John";
+    $scope.lastName= "Doe";
+});
+</script> 
+ 
 </body>
 </html>
 
