@@ -1,9 +1,9 @@
 
 <html>
 <body>
-<!script type="text/javascript" src="/node_modules/angular/angular.min.js"><!/script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
-<script type="text/javascript" src="home/home.view.js"></script>
+<script src="angular/angular.min.js"></script>
+<!script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"><!/script>
+
 
 <h2>Hello Chris</h2>
 <img src="hehua.jpg" alt="water lotus" style="width:604px;height:448px;"/>
@@ -17,26 +17,21 @@
 <br>
 </div>
 
-<script>
-//angular.module('homeApp', []).config(function($routeProvider, $locationProvider) {
-//	$locationProvider.html5Mode(true);
-//});
-</script>
+
+<script type="text/javascript" src="home/home.view.js"></script>
 
 <script>
-angular.module('homeApp', [])
+/*angular.module('homeApp', [])
 .controller('myCtrl', ['$scope', '$location', function($scope, $location) {
     $scope.loginClicked = function() {
-    	$location.path("/login/");
-    	console.log("login clicked");
+    	window.location.href = "/login";
     };
     $scope.registerClicked = function() {
-    	$location.path("/register/");
-    	console.log("register clicked");
+    	window.location.href = "/register";
 	}
-
 }]);
-	
+*/
+
 </script>  
 
 
