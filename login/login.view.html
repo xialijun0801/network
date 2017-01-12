@@ -1,0 +1,27 @@
+<html>
+<body>
+
+<h2>Angular Login Page</h2>
+<!script type="text/javascript" src="/node_modules/angular/angular.min.js"><!/script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
+<body>
+
+<p>Login</p>
+<div ng-app="loginApp" ng-controller="myCtrl">
+
+User Name: <input type="text" ng-model="userName"><br>
+PassWord:<input type="text" ng-model="passWord"><br>
+<br>
+</div>
+
+<script>
+var app = angular.module('loginApp', []);
+app.controller('myCtrl', function($scope) {
+    $scope.userName= "John";
+    $scope.passWord= "****";
+});
+</script> 
+ 
+</body>
+</html>
+
