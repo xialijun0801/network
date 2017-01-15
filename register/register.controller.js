@@ -1,5 +1,4 @@
 
-
 angular.module("registerApp", []).controller("RegisterController", ['$scope', '$http' , function($scope, $http) {
 	$scope.count= 0;
 	$scope.registerSuccess = false;
@@ -32,6 +31,8 @@ angular.module("registerApp", []).controller("RegisterController", ['$scope', '$
         console.log("send request register " + JSON.stringify(data));
 
         $http.post("/register/process", data).then(function(response) {
+        	$scope.registerMessage = "";
+        	$scope.registerSuccess = false;
  	    	console.log(response.data);
  	    	console.log(response.data.message);
 
