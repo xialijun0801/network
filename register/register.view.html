@@ -1,30 +1,35 @@
-<html>
-<body>
+<script src="/angular/angular.min.js"></script>
+<h2>Angular Register page</h2>
 
-<h2>Angular register Page</h2>
-<script type="text/javascript" src="angular/angular.min.js"></script>
-<body>
+<body >
 
-<p>Register</p>
-<div ng-app="registerApp" ng-controller="myCtrl">
+<form name = "myform" ng-app="registerApp" ng-controller="RegisterController">
+    First Name: <input type="text" name = "firstname" ng-model="firstname"/><br>
+    Last Name : <input type="text"  name = "lastname"  ng-model="lastname"/><br>
+    Email Address: <input type="email" name = "email" ng-model="email" required />
+    <span ng-show="myform.email.$error.required">Email is required.</span>
+    <span ng-show="myform.email.$error.email">Invalid email address.</span>
+    <br>
+    User Name:  <input type="text"    name="username"     ng-model="username" required /> 
+    <span  ng-show="myform.username.$error.required"> User name is required</span> 
+    <br>
+    Password :  <input type="password"  name = "password" ng-model="password" required /> 
+    <span  ng-show="myform.password.$error.required">Password is required</span> <br>
 
-First Name: <input type="text" ng-model="firstName"><br>
-Last Name: <input type="text" ng-model="lastName"><br>
-User Name: <input type="text" ng-model="userName"><br>
-Email Address: <input type="text" ng-model="emailAddress"><br>
-PassWord:<input type="text" ng-model="passWord"><br>
-<br>
-</div>
+    ReEnter Password :  <input type="password"  name = "password2" ng-model="password2" required /> 
+    <span  ng-show="myform.password.$error.required">Password is required</span> 
+    <br>
+    <button type="submit" ng-click="registerSubmit()" ng-disabled="myform.username.$invalid ||
+                                                  myform.password.$invalid ||
+                                                  myform.email.$invalid ">Submit</button>
+    <button type="submit" ng-click="transferToLogin()" ng-disabled="!registerSuccess">Click To Login</button>
 
-<script>
-var app = angular.module('registerApp', []);
-app.controller('myCtrl', function($scope) {
-    $scope.firstName= "John";
-    $scope.lastName= "Doe";
-    $scope.userName= "userName";
-});
-</script> 
- 
+    {{registerMessage}}
+</form>
+
+
+<script type="text/javascript" src="register.controller.js"> </script>
+
 </body>
 </html>
 

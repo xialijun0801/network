@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/xialijun0801/network#readme",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "express": "^4.14.0"
   },
   "devDependencies": {},
