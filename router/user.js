@@ -13,10 +13,6 @@ router.get("/register",function(req,res){
     res.sendFile(path.join(__dirname, "../register/register.view.html"));
 });
 
-router.get("/coding",function(req,res){
-    res.sendFile(path.join(__dirname, "../coding/coding.view.html"));
-})
-
 var User = require('../model/user');
 var Coding = require('../model/coding');
 
@@ -48,7 +44,6 @@ router.post('/login/process', function(req,res,next) {
  	    }
 
  	    console.log(user);
- 	    
  	    User.comparePassword(password, user.password, function(err, isMatch) {
  	    	if(err) {
  	    		resonse["message"] = "Unknown Error";
@@ -82,7 +77,6 @@ router.post('/register/process', function(req,res,next) {
 	var email = user.body.email;
 	var password = user.body.password;
 
-
     var response = {
 			"message" : "",
 			"success" : true,
@@ -108,8 +102,9 @@ router.post('/register/process', function(req,res,next) {
     });
 });
 
-/*router.use(function(req, res, callback) {
+router.use('/coding', function(req, res, callback) {
 	console.log("The app is visited");
+	console.log(req.param);
 	var token = req.body.token || req.param('token') || req.headers['x-access-token'];
 	if(token){
 		jsonwebtoken.verify(token, "MySecretKey", function(err,decoded) {
@@ -125,13 +120,14 @@ router.post('/register/process', function(req,res,next) {
 	}
 	else{
 		console.log("No token provided");
+		res.status(403).send({ success: false, message: "No Token Provided"});
 	}
-});*/
+});
 
-/*router.route('/')
+router.route('/coding')
     .post(function (req, res) {
+    	console.log(req.decoded);
     	var coding = new Coding({
-    		log.console(req.decoded);
     		creator: req.decoded.id,
     		content: req.body.content,
     		language: req.body.language
@@ -151,15 +147,23 @@ router.post('/register/process', function(req,res,next) {
     		function(err, codings){
     			if(err) {
     				res.end(err);
+    				return;
     			}
-    			res.end(JSON.stringify(codings));
+    			res.redirect('/coding');
+    			res.end(codings);
     		})
     });
-*/
+
+router.get('/me', function(req, res) {
+	console.log(req);
+	console.log(req.decoded);
+	res.end(JSON.stringify(req.decoded));
+});
+
 function createToken(user) {
 	var token = jsonwebtoken.sign(
 	{
-		_id: user._id,
+		id: user._id,
 		username: user.username,
 		email:user.email
 	}, "MySecretKey", {
@@ -167,5 +171,6 @@ function createToken(user) {
 	});
 	return token;
 }
+
 
 module.exports = router;

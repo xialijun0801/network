@@ -26,6 +26,8 @@ var db = mongoose.connection;
 app.use(express.static(__dirname+'/image'));
 app.use('/', userRoutes);
 app.use("/angular", express.static(path.join(__dirname,"node_modules/angular")));
+app.use("/angular-route", express.static(path.join(__dirname,"node_modules/angular-route")));
+
 app.use("/login", express.static(path.join(__dirname, "login")));
 app.use("/register", express.static(path.join(__dirname, "register")));
 app.use("/home", express.static(path.join(__dirname, "home")));

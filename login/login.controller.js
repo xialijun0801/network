@@ -16,11 +16,21 @@ angular.module("loginApp", []).controller("LoginController", ['$scope', '$http' 
  	    $http.post("/login/process", data).then(function(response) {
  	    	console.log(response.data);
  	    	console.log(response.data.message);
+ 	    	console.log(localStorage);
 
  	    	if(response.data.success == true) {
  	    	    console.log('Log in successfully ');
  	    	    $scope.loginMessage = "Login Successfully, please wait for redirection";
- 	    	    window.location.href = "/coding";
+ 	    	    var newData = {
+ 	    	    	username:username,
+ 	    	    	token: response.data.token
+ 	    	    };
+ 
+ 	    	    console.log(newData);
+ 	    	    $http.get("/coding", {params:newData}).then(function(codingResponse) {
+ 	    	    	console.log("success");
+ 	    	    	console.log(codingResponse);
+ 	    	    });
  	        }
  	        else {
  	        	console.log('Log in Failed');
@@ -33,3 +43,5 @@ angular.module("loginApp", []).controller("LoginController", ['$scope', '$http' 
  	    });
  	}
  }]);
+
+
