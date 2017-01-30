@@ -1,0 +1,91 @@
+extends ../layouts/layout
+block content
+  .container.clearfix
+    .row
+      .col-md-10.col-sm-10.col-xs-10.col-md-offset-1.col-xs-offset-1.col-xs-offset-1
+        h2 #{ problem.problemTitle }  
+        hr
+        h4 #{ problem.problemContents }
+        hr
+        form(action = "/problems/codeinput", method = "post")
+          .form-group
+            .row
+               .col-xs-3.col-sm-3
+                  select(class  = "language", id = "language", name = "language", onchange='doThisOnChange(this.value)')
+                    option(value='C') C
+                    option(value='C++') C++
+                    option(value='Java') Java
+                    option(value='Java Script') Java Script
+                    option(value='Python') Python
+            hr
+            input(type="hidden" id= "problemId" name = "problemId" value = problem._id )
+ 
+            textarea(type="text" id="editContent" name="editContent" rows = 20 ) #{editContent}
+            .clearfix
+              input(type="hidden" name = "_csrf" value = csrfToken)
+              button(type="submit", value = "run").btn.btn-default.pull-left
+                strong Submit 
+        if(runtime)
+          textarea(type="text" id="codeRunarea", name = "codeRunarea" rows = 7) Code Output: #{codeRunarea} 
+        //button#hide hide
+
+        .row.complieError
+          .col-md-10.col-sm-10.col-xs-10.col-md-offset-1.col-xs-offset-1.col-xs-offset-1
+            if hasError
+              each err in stderr
+                p #{ err }
+
+            else if hasText
+              .alert.alert-success
+                p Well done! your code is successfuly compiled
+
+    script(src="/addline.js" type="text/javascript")
+
+    script(type="text/javascript").
+      selected="#{languageS}";
+      function setSelectedIndex(s, valueSearch) {
+        for(var i = 0; i < s.options.length; ++i) {
+          if(s.options[i].value == valueSearch) {
+            s.options[i].selected = true;
+            break;
+          }
+        }
+        return;
+      }
+      setSelectedIndex(document.getElementById("language"), selected);
+
+    
+    script(type="text/javascript").
+        function doThisOnChange (value, optionIndex) {
+          if ( optionIndex != null )
+          {
+            var option = document.getElementById( "language" ).options[optionIndex];
+                option.selected = true;
+                value = option.value;
+          }
+          setDefaultCoding(value, document.getElementById("editContent"));
+        }
+
+        function setDefaultCoding(selected, content) {
+          if(selected === 'C') {
+            content.value = !{JSON.stringify(defaultCoding['C'])};
+          }
+          else if (selected === 'C++') {
+            content.value = !{JSON.stringify(defaultCoding['C++'])};
+          }
+          else if (selected ==='Java'){
+            content.value = !{JSON.stringify(defaultCoding['Java'])};
+          } 
+          else {
+            content.value = "";
+          }
+        }
+
+    if(!hasText)
+      script(type = "text/javascript").
+        setDefaultCoding('C', document.getElementById("editContent"));
+      //document.getElementById("editContent").value = "Tryeeeeeeeee";
+    
+      
+      
+    

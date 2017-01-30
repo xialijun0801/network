@@ -1,0 +1,109 @@
+.btn.btn-primary.navbar-btn .btn.btn-default.navbar-btn{
+	margin-left: 5px;
+    background-color: #696969;
+}
+ 
+.navbar.navbar-inverse  .container-fluid{
+	width: 80%;
+    background-color: #111111;
+}
+
+#cntforsignup {
+	margin-top: 10px;
+}
+
+.panel-body .btn.btn-primary{
+	margin-top: 10px;.
+	margin-bottom: 10px;
+}
+
+.btn.btn-primary.btn-lg{
+	margin-top: 10px;.
+	margin-bottom: 10px;
+}
+
+#minimumcharacters {
+    	color: #777;
+}
+
+.th .td {
+        padding: 15px;
+}
+
+.rows{
+  background: #e3e3e3;
+  box-sizing: border-box;
+  color: #999;
+  font-family: monospace;
+  font-size: 1.8em;
+  height: 100%;
+  line-height: 20px;
+  max-height: 600px;
+  padding: 0.16em 0em;
+  text-align: right;
+  width: 48px;
+  vertical-align: top;
+}
+
+.row.complieError {
+	width: 100%;
+	border-radius: 5px;
+	margin-top: 10px;
+}
+
+.lineObj{
+	color:#777;
+}
+
+#codeTextareaContainer {
+	width: 100%;
+}
+
+.btn.btn-default.pull-right.runCode {
+	margin-top: 15px;
+	margin-right: 5px;	
+}
+
+.btn.btn-primary.pull-right.submitSolution {
+	margin-top: 15px;
+	margin-right: 5px;	
+}
+
+
+#editContent{
+	border: 1px solid #eee;
+	border-radius: 5px;
+	height: 510px;
+	width: 95%;
+	margin-left:10px;
+}
+
+.textAreaWithLines{
+	line-height:120%;
+	font-family: sans-serif;
+	font-size:13px;
+	background: white;
+	border: 0px solid #eee;
+}
+
+.textAreaWithLines textarea,.textAreaWithLines div{
+	line-height:120%;
+	font-family: sans-serif;
+	font-size:13px;
+	border: 0px solid #eee;
+}
+
+#codeRunarea{
+	border: 1px solid #eee;
+	border-radius: 5px;
+	height: 150px;
+	width: 100%;
+}
+
+#divlines 
+{   
+	position: absolute;
+}
+
+
+textarea {font-size:100%;}

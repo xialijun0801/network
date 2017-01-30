@@ -1,0 +1,36 @@
+extends ../layouts/layout
+
+block content 
+  .row
+    .col-md-9.col-md-offset-1
+      .panel.panel-default
+        table.table.table-striped
+          thead
+            tr
+              th #
+              th Title
+          tbody
+             each problem, index in problems
+                  tr
+                    td.thclass1= Number(index) + Number(pagenumber-1) * 10
+                    td.thclass2 
+                      a(href= '/problems/tackle-view/' + problem._id)= problem.problemTitle
+        .panel-footer
+          nav(aria-label='Page navigation')
+            ul.pagination
+              if pagenumber != 1
+                li
+                  a(href='/problems/' + (Number(pagenumber) - 1), aria-label='Previous')
+                    span(aria-hidden='true') «
+              - for (var i = 1; i <= pages; i++){
+                if pagenumber == i 
+                  li.active
+                    a(href='/problems/' + i)= i
+                else
+                  li
+                    a(href='/problems/' + i)= i
+              - }
+              if pagenumber != pages
+                li
+                  a(href='/problems/' + (Number(pagenumber) + 1), aria-label='Next')
+                    span(aria-hidden='true') »
