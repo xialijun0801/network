@@ -7,7 +7,7 @@ var problemSchema = new Schema({
 	problemContents: {type: String, required: true},
 });
 
-var Problem = module.exports = mongoose.model('Problem', problemSchema);
+
 
 module.exports.createProblem = function(newproblem, callback){
 	newproblem.save(function(err, problem){
@@ -56,3 +56,5 @@ var onErr = function(err,callback) {
   mongoose.connection.close();
   callback(err);
 };
+
+var Problem = module.exports = mongoose.model('Problem', problemSchema);
