@@ -240,7 +240,7 @@ function compile(coding, language, req, res, problem) {
 	                }); 
             }
             else {
-            	var runningCodeCommand = "./"+ executableFileName;
+            	var runningCodeCommand = "LD_PRELOAD=./EasySandbox/EasySandbox.so " + "./"+ executableFileName;
 
             	if(language === 'Java') {
             		runningCodeCommand = "cd output; java HelloWorld";
