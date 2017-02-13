@@ -5,8 +5,6 @@ var express = require('express');
 var router = express.Router();
 var csrf = require('csurf');
 var passport = require('passport');
-var Sandbox = require('docker-python-sandbox');
-var JavaSandbox = require('../sandbox/lib/sandbox');
 
 
 var csrfProtection = csrf();
@@ -16,6 +14,7 @@ var pug = require('pug');
 var fs = require('fs');
 
 var Problem = require('../models/problem');
+var Compiler = require('../compilers/compiler');
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
@@ -118,7 +117,7 @@ router.get('*/problems/tackle-view/:problemId', isLoggedIn, function(req, res, n
 		}});
     }
 
-    var defaultCoding = getDefaultCodingMap();
+    var defaultCoding = Compiler.GetDefaultCodingMap();
 
     res.render('problem/codeinput', { 
     	hasError: false,
@@ -149,13 +148,14 @@ router.post('/problems/codeinput', function(req, res, next) {
 		}
 
 		if(hasText && (language === 'C' || language === 'Java' || language === 'C++')) {
-			var err = compile(coding, language, req, res, problem);
+			Compiler.Compile(coding, language, req, res, problem);
         }
         else if (hasText && language === 'Python') {
-        	pythonSandbox(coding, problem, req, res);
+        	Compiler.PythonSandbox(coding, problem, req, res);
         }
         else if (hasText && language == 'Java Script') {
-        	javaScriptSandbox(coding, problem, req, res);
+        	//javaScriptSandbox(coding, problem, req, res);
+        	Compiler.JavaScriptSandbox(coding, problem, req,res);
         }
         else if(!hasText) {
         	var err = ["The input is empty, please make sure the input is valid"];
@@ -167,215 +167,12 @@ router.post('/problems/codeinput', function(req, res, next) {
 		            username: req.session.username,
 		            editContent: coding,
 		            languageS: language,
-		            defaultCoding: getDefaultCodingMap(),
+		            defaultCoding: Compiler.GetDefaultCodingMap(),
 		            csrfToken: req.csrfToken()
 	                });
 		}
 	});
 });
-
-
-function compile(coding, language, req, res, problem) {
-	console.log(language);
-
-	var compileLanguage = ['C', 'C++', 'Java'];
-	var commands= {};
-	commands['C'] = 'gcc -o';
-	commands['C++'] = 'g++ -o';
-	commands['Java'] = 'javac';
-
-	var username = req.session.username;
-	var outputFileName = 'output/temp'+ username+problem._id;
-
-	
-	if(language === 'C') {
-		inputFilename = outputFileName + '.c';
-	}
-	else if (language === 'C++') {
-		inputFilename = outputFileName + '.cpp';
-	}
-	else if(language === 'Java'){
-		inputFilename = 'output/HelloWorld.java';
-	}
-
-    console.log(inputFilename);
-    var command = commands[language];
-
-    var executableFileName = "";
-
-	if(language === 'C' || language == "C++") {
-		executableFileName = outputFileName + ".out";
-		command = command + ' ' + executableFileName;
-	}
-	command = command + ' ' + inputFilename;
-
-	console.log(command);
-
-    fs = require('fs');
-    fs.writeFile(inputFilename, coding, function (err) {
-		if (err) 
-			return console.log(err);
-
-		const exec = require('child_process').exec;
-		const child = exec(command, function(error, stdout, stderr) {
-			console.log("compile code");
-			var err = [];	
-	        var hasError = false;
-	        var runtime = false;
-	        var output = "";
-		    if (error) {
-			    console.error('stderr', stderr);
-			    err.push(stderr);
-			    hasError = true;
-			    res.render('problem/codeinput', { 
-            	    hasError: true,
-            	    hasText: true,
-    	            stderr : err,
-    	            problem: problem,  
-		            username: req.session.username,
-		            editContent: coding,
-		            languageS: language,
-		            defaultCoding: getDefaultCodingMap(),
-		            csrfToken: req.csrfToken()
-	                }); 
-            }
-            else {
-            	var runningCodeCommand = "LD_PRELOAD=./EasySandbox/EasySandbox.so " + "./"+ executableFileName;
-
-            	if(language === 'Java') {
-            		runningCodeCommand = "cd output; java HelloWorld";
-            	}
-
-            	console.log(runningCodeCommand);
-
-            	exec(runningCodeCommand, function(error, stdout,stderr){
-            		console.log("running code");
-            		if (error) {
-            			err.push(stderr);
-            			hasError = true;
-            		}
-            		else {
-            			runtime= true,
-            			output = stdout
-            		}
-            		console.log("runtime: " + runtime);
-            		console.log("output: " + stdout);
-            		res.render('problem/codeinput', { 
-            	    hasError: hasError,
-            	    hasText: true,
-    	            stderr : err,
-    	            runtime : runtime,
-    	            codeRunarea: output,
-    	            problem: problem,  
-		            username: req.session.username,
-		            editContent: coding,
-		            languageS: language,
-		            defaultCoding: getDefaultCodingMap(),
-		            csrfToken: req.csrfToken()
-	                }); 
-            		
-            	});
-            }
-            
-        });
-	});
-}
-
-function getDefaultCodingMap() {
-	var defaultCoding = {};
-    var languages = ['C', 'C++', 'Java', 'Python', 'Java Script'];
-    for (var i = 0; i < languages.length; ++i) {
-    	defaultCoding[languages[i]] = (getDefaultCoding(languages[i]));
-    }
-    return defaultCoding;
-}
-
-function getDefaultCoding(language) {
-	if(language == 'C') {
-		return "#include <stdio.h>\n\
-	\n\
-int main()\n\
-{ \n\
-        printf(\"Hello, World!\\n\");\n\
-\n\
-        return 0;\n\
-}"
-	}
-	else if (language == 'C++') {
-		return "#include <iostream>\n\
-#include <string>\n\
-\n\
-int main()\n\
-{\n\
-        std::string name;\n\
-        std::cout << \"What is your name? \";\n\
-}"
-	}
-	else if (language == 'Java') {
-		return "public class HelloWorld{\n\
-\n\
-        public static void main(String []args){\n\
-                System.out.println(\"Hello World\");\n\
-        }\n\
-}"
-	}
-	else if (language == "Python") {
-		return "print \"Hello World!\\n\"";
-	}
-
-	else if (language == "Java Script") {
-		return "console.log(\"Hello, world!\")";
-	}
-}
-
-function pythonSandbox(pythoncoding, problem, req, res) {
-	const poolSize = 5;
-	var mySandbox = new Sandbox({poolSize});
-
-    var hasError = false;
-  
-	mySandbox.initialize(err => {
-        if (err) console.log(`unable to initialize the sandbox: ${err}`)
-  
-        const code = pythoncoding;
-        const timeoutMs = 100;
-        mySandbox.run({code, timeoutMs}, (err, result) => {
-        	res.render('problem/codeinput', { 
-            	    hasError: result.isError,
-            	    hasText: true,
-            	    runtime: true,
-            	    stderr : [],
-    	            codeRunarea: result.combined,
-    	            problem: problem,  
-		            username: req.session.username,
-		            editContent: code,
-		            languageS: 'Python',
-		            defaultCoding: getDefaultCodingMap(),
-		            csrfToken: req.csrfToken()
-	                });
-        })
-    });
-}
-
-function javaScriptSandbox(javaScriptCoding, problem, req, res) {
-	var s = new JavaSandbox();
-	s.run( javaScriptCoding, function( output ) {
-		var codeRunarea = output.result + '\n' + output.console;
-		res.render('problem/codeinput', { 
-            	    hasError: false,
-            	    hasText: true,
-            	    runtime: true,
-            	    stderr : [],
-    	            codeRunarea: codeRunarea,
-    	            problem: problem,  
-		            username: req.session.username,
-		            editContent: javaScriptCoding,
-		            languageS: 'Java Script',
-		            defaultCoding: getDefaultCodingMap(),
-		            csrfToken: req.csrfToken()
-	                });
-	});
-}
 
 
 
@@ -414,7 +211,7 @@ function isLoggedIn(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
 	}
-	res.redirect('/');
+	res.redirect('/signin');
 }
 
 
